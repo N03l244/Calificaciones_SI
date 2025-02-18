@@ -12,29 +12,31 @@ db = SQLAlchemy(app)
 # Modelos
 class Alumno(db.Model):
     __tablename__ = 'alumnos'
-    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
-    nombre = db.Column(db.String(100), nullable=False)
-    email = db.Column(db.String(100), unique=True, nullable=False)
-     # Nuevos atributos
-    matricula = db.Column(db.String(9), unique=True, nullable=False)
-    carrera = db.Column(db.String(100), nullable=False)
-    cuatrimestre = db.Column(db.String(20), nullable=False)
-    materias = db.relationship('Materia', backref='alumno', lazy=True)
+    id = db.Column(db.Integer, primary_key=True)
+    nombre = db.Column(db.String(255), nullable=False)
+    email = db.Column(db.String(255), nullable=False)
+    matricula = db.Column(db.String(255), nullable=False)
+    carrera = db.Column(db.String(255), nullable=False)
+    cuatrimestre = db.Column(db.String(255), nullable=False)
+    # Relación con calificaciones
+    calificaciones = db.relationship('Calificacion', backref='estudiante', lazy=True)
 
 class Materia(db.Model):
     __tablename__ = 'materias'
-    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
-    nombre = db.Column(db.String(100), nullable=False)
-    alumno_id = db.Column(db.Integer, db.ForeignKey('alumnos.id'), nullable=False)
+    id = db.Column(db.Integer, primary_key=True)
+    nombre = db.Column(db.String(255), nullable=False)
+    # Relación con calificaciones
     calificaciones = db.relationship('Calificacion', backref='materia', lazy=True)
 
 class Calificacion(db.Model):
     __tablename__ = 'calificaciones'
-    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
-    parcial1 = db.Column(db.Integer, nullable=True)
-    parcial2 = db.Column(db.Integer, nullable=True)
-    parcial3 = db.Column(db.Integer, nullable=True)
-    materia_id = db.Column(db.Integer, db.ForeignKey('materias.id'), nullable=False)
+    id = db.Column(db.Integer, primary_key=True)
+    id_alumno = db.Column(db.Integer, db.ForeignKey('alumnos.id'), nullable=False)
+    id_materia = db.Column(db.Integer, db.ForeignKey('materias.id'), nullable=False)
+    parcial1 = db.Column(db.Numeric(5, 2))
+    parcial2 = db.Column(db.Numeric(5, 2))
+    parcial3 = db.Column(db.Numeric(5, 2))
+
 
 # Función para calcular probabilidad de aprobar
 def calcular_probabilidad(p1, p2, p3):
@@ -48,32 +50,46 @@ def index():
     alumnos = Alumno.query.all()
     return render_template('index.html', alumnos=alumnos)
 
+# Ruta para el detalle del alumno
 @app.route('/alumno/<int:id>', methods=['GET', 'POST'])
 def alumno_detalle(id):
     alumno = Alumno.query.get_or_404(id)
+    
+    # Obtener las materias asociadas al alumno a través de las calificaciones
+    materias = [calificacion.materia for calificacion in alumno.calificaciones]
+
+    print(f"Materias del alumno {alumno.id}: {materias}")  # Verificación
 
     if request.method == 'POST':
-        for materia in alumno.materias:
+        for materia in materias:
             p1 = request.form.get(f'parcial1_{materia.id}', type=int)
             p2 = request.form.get(f'parcial2_{materia.id}', type=int)
             p3 = request.form.get(f'parcial3_{materia.id}', type=int)
-            
-            # Actualizar las calificaciones si la materia ya tiene calificaciones asociadas
-            if materia.calificaciones:
-                calificacion = materia.calificaciones[0]
-                calificacion.parcial1 = p1
-                calificacion.parcial2 = p2
-                calificacion.parcial3 = p3
-            # Si no tiene calificaciones, asignar las nuevas
+
+            # Buscar la calificación existente
+            calificacion = Calificacion.query.filter_by(id_alumno=alumno.id, id_materia=materia.id).first()
+
+            if calificacion:
+                # Actualizar solo los valores no nulos
+                if p1 is not None: calificacion.parcial1 = p1
+                if p2 is not None: calificacion.parcial2 = p2
+                if p3 is not None: calificacion.parcial3 = p3
             else:
-                nueva_calificacion = Calificacion(parcial1=p1, parcial2=p2, parcial3=p3, materia=materia)
+                # Crear una nueva calificación si no existe
+                nueva_calificacion = Calificacion(
+                    id_alumno=alumno.id,
+                    id_materia=materia.id,
+                    parcial1=p1,
+                    parcial2=p2,
+                    parcial3=p3
+                )
                 db.session.add(nueva_calificacion)
 
         db.session.commit()
         return redirect(url_for('alumno_detalle', id=alumno.id))
 
-    return render_template('alumno_detalle.html', alumno=alumno, calcular_probabilidad=calcular_probabilidad)
 
+    return render_template('alumno_detalle.html', alumno=alumno, calcular_probabilidad=calcular_probabilidad, materias=materias)
 
 
 # Ruta para agregar un nuevo alumno
@@ -112,30 +128,54 @@ def agregar_alumno():
     return render_template('agregar_alumno.html')
 
 
-
 @app.route('/alumno/<int:id>/agregar_materia', methods=['GET', 'POST'])
 def agregar_materia(id):
     alumno = Alumno.query.get_or_404(id)
 
+    # Obtener todas las materias existentes
+    materias_existentes = Materia.query.all()
+
     if request.method == 'POST':
-        # Obtener el nombre de la materia desde el formulario
-        nombre_materia = request.form['nombre']
-        
-        # Crear una nueva materia y asociarla con el alumno
-        nueva_materia = Materia(nombre=nombre_materia, alumno_id=alumno.id)
-        
-        # Crear calificaciones predeterminadas (puedes establecer valores por defecto o dejarlas vacías)
-        nueva_calificacion = Calificacion(parcial1=None, parcial2=None, parcial3=None, materia=nueva_materia)
+        # Obtener el id de la materia seleccionada o el nombre de una nueva
+        materia_id = request.form.get('materia_existente')
+        nombre_materia = request.form.get('nombre')
 
-        # Guardar la materia y las calificaciones
-        db.session.add(nueva_materia)
-        db.session.add(nueva_calificacion)
+        # Si selecciona una materia existente
+        if materia_id:
+            materia_existente = Materia.query.get(materia_id)
+
+            # Verificar si ya está asociada al alumno
+            calificacion_existente = Calificacion.query.filter_by(id_alumno=alumno.id, id_materia=materia_existente.id).first()
+
+            if calificacion_existente:
+                return render_template('agregar_materia.html', alumno=alumno, materias_existentes=materias_existentes, error="La materia ya está asociada al alumno.")
+        
+            nueva_calificacion = Calificacion(id_alumno=alumno.id, id_materia=materia_existente.id)
+            db.session.add(nueva_calificacion)
+
+        # Si agrega una materia nueva
+        elif nombre_materia:
+            # Verificar si la materia ya existe
+            materia_existente = Materia.query.filter_by(nombre=nombre_materia).first()
+
+            if materia_existente:
+                nueva_calificacion = Calificacion(id_alumno=alumno.id, id_materia=materia_existente.id)
+                db.session.add(nueva_calificacion)
+            else:
+                # Crear nueva materia y asociarla
+                nueva_materia = Materia(nombre=nombre_materia)
+                db.session.add(nueva_materia)
+                db.session.flush()  # Obtiene el id antes de commit
+                nueva_calificacion = Calificacion(id_alumno=alumno.id, id_materia=nueva_materia.id)
+                db.session.add(nueva_calificacion)
+
         db.session.commit()
-
-        # Redirigir al detalle del alumno después de agregar la materia
         return redirect(url_for('alumno_detalle', id=alumno.id))
 
-    return render_template('agregar_materia.html', alumno=alumno)
+    return render_template('agregar_materia.html', alumno=alumno, materias_existentes=materias_existentes)
+
+
+
 
 @app.route('/editar_alumno/<int:alumno_id>', methods=['GET', 'POST'])
 def editar_alumno(alumno_id):

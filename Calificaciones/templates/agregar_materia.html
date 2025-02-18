@@ -5,9 +5,25 @@
 {% block content %}
 <h1 class="text-2xl font-bold mb-4">Agregar Materia para {{ alumno.nombre }}</h1>
 
+{% if error %}
+    <p class="text-red-500">{{ error }}</p>
+{% endif %}
+
 <form method="POST" action="{{ url_for('agregar_materia', id=alumno.id) }}" class="max-w-lg">
-    <label for="nombre" class="block mb-2">Nombre de la Materia:</label>
-    <input type="text" id="nombre" name="nombre" required class="w-full p-2 mb-4 border rounded">
+    <!-- Lista de materias existentes -->
+    <label for="materia_existente" class="block mb-2">Seleccionar Materia Existente:</label>
+    <select id="materia_existente" name="materia_existente" class="w-full p-2 mb-4 border rounded">
+        <option value="">-- Seleccionar Materia --</option>
+        {% for materia in materias_existentes %}
+            <option value="{{ materia.id }}">{{ materia.nombre }}</option>
+        {% endfor %}
+    </select>
+
+    <p class="text-gray-600 mb-4">O bien, agrega una nueva materia:</p>
+
+    <!-- Opción para agregar una nueva materia -->
+    <label for="nombre" class="block mb-2">Nombre de la Nueva Materia:</label>
+    <input type="text" id="nombre" name="nombre" class="w-full p-2 mb-4 border rounded">
 
     <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">Agregar Materia</button>
     <a href="{{ url_for('alumno_detalle', id=alumno.id) }}" class="ml-4 text-gray-600 hover:underline">Cancelar</a>
