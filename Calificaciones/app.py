@@ -88,8 +88,10 @@ def alumno_detalle(id):
         db.session.commit()
         return redirect(url_for('alumno_detalle', id=alumno.id))
 
+    # Calcular la probabilidad de aprobar el cuatrimestre
+    probabilidad, estado = calcular_probabilidad_cuatrimestre(alumno)
 
-    return render_template('alumno_detalle.html', alumno=alumno, calcular_probabilidad=calcular_probabilidad, materias=materias)
+    return render_template('alumno_detalle.html', alumno=alumno, calcular_probabilidad=calcular_probabilidad, materias=materias, probabilidad_cuatrimestre=probabilidad, estado_cuatrimestre=estado)
 
 
 # Ruta para agregar un nuevo alumno
@@ -190,6 +192,41 @@ def editar_alumno(alumno_id):
         return redirect(url_for('alumno_detalle', id=alumno.id))
     
     return render_template('editar_alumno.html', alumno=alumno)
+
+# Función para calcular la probabilidad de aprobar el cuatrimestre
+def calcular_probabilidad_cuatrimestre(alumno):
+    calificaciones = Calificacion.query.filter_by(id_alumno=alumno.id).all()
+    total_asignaturas = len(calificaciones)
+    aprobadas = 0
+    reprobadas = 0
+    en_evaluacion_final = 0
+
+    for calificacion in calificaciones:
+        parciales = [calificacion.parcial1, calificacion.parcial2, calificacion.parcial3]
+        aprobados = sum(1 for p in parciales if p is not None and p >= 70)
+        
+        if aprobados == 3:
+            aprobadas += 1
+        elif aprobados == 0:
+            reprobadas += 1
+        else:
+            en_evaluacion_final += 1
+
+    # Calcular la probabilidad de aprobar el cuatrimestre
+    if total_asignaturas == 0:
+        return 0, "Sin asignaturas"
+
+    probabilidad = (aprobadas + 0.5 * en_evaluacion_final) / total_asignaturas * 100
+
+    # Determinar el estado del cuatrimestre
+    if reprobadas > total_asignaturas / 2:
+        estado = "Reprobado"
+    elif aprobadas + en_evaluacion_final >= total_asignaturas / 2:
+        estado = "En Riesgo"
+    else:
+        estado = "Aprobado"
+
+    return probabilidad, estado
 
 # Crear tablas
 with app.app_context():

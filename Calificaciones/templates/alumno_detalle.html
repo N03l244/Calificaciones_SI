@@ -69,6 +69,22 @@
         <button type="submit" class="mt-4 px-4 py-2 bg-blue-500 text-white rounded-lg">Actualizar Calificaciones</button>
     </form>
 
+    <h2 class="text-xl font-semibold mb-2 mt-6">Probabilidad de Aprobar el Cuatrimestre</h2>
+<p>Probabilidad: 
+    <span class="
+        {% if probabilidad_cuatrimestre >= 80 %}
+            text-green-600
+        {% elif probabilidad_cuatrimestre >= 50 %}
+            text-yellow-600
+        {% else %}
+            text-red-600
+        {% endif %}
+    ">
+        {{ probabilidad_cuatrimestre|round(2) }}%
+    </span>
+</p>
+<p>Estado: {{ estado_cuatrimestre }}</p>
+
     <a href="{{ url_for('index') }}" class="mt-4 inline-block text-blue-500 hover:underline">Volver a la lista de alumnos</a>
 
     <!-- Botón para agregar una materia -->
