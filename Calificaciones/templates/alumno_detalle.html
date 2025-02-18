@@ -1,0 +1,47 @@
+{% extends 'base.html' %}
+
+{% block title %}Detalles de {{ alumno.nombre }}{% endblock %}
+
+{% block content %}
+<h1 class="text-2xl font-bold mb-4">Detalles de {{ alumno.nombre }}</h1>
+<p class="mb-4">Correo: {{ alumno.email }}</p>
+
+<h2 class="text-xl font-semibold mb-2">Materias y Calificaciones</h2>
+
+<form method="POST">
+    <table class="table-auto w-full border-collapse border border-gray-300">
+        <thead>
+            <tr class="bg-gray-200">
+                <th class="border border-gray-300 px-4 py-2">Materia</th>
+                <th class="border border-gray-300 px-4 py-2">Parcial 1</th>
+                <th class="border border-gray-300 px-4 py-2">Parcial 2</th>
+                <th class="border border-gray-300 px-4 py-2">Parcial 3</th>
+                <th class="border border-gray-300 px-4 py-2">Probabilidad de Aprobar</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for materia in alumno.materias %}
+            <tr>
+                <td class="border border-gray-300 px-4 py-2">{{ materia.nombre }}</td>
+                <td class="border border-gray-300 px-4 py-2">
+                    <input type="number" name="parcial1_{{ materia.id }}" value="{{ materia.calificaciones[0].parcial1 if materia.calificaciones else '' }}" class="border p-1 w-full">
+                </td>
+                <td class="border border-gray-300 px-4 py-2">
+                    <input type="number" name="parcial2_{{ materia.id }}" value="{{ materia.calificaciones[0].parcial2 if materia.calificaciones else '' }}" class="border p-1 w-full">
+                </td>
+                <td class="border border-gray-300 px-4 py-2">
+                    <input type="number" name="parcial3_{{ materia.id }}" value="{{ materia.calificaciones[0].parcial3 if materia.calificaciones else '' }}" class="border p-1 w-full">
+                </td>
+                <td class="border border-gray-300 px-4 py-2">
+                    {{ calcular_probabilidad(materia.calificaciones[0].parcial1, materia.calificaciones[0].parcial2, materia.calificaciones[0].parcial3) if materia.calificaciones else '0' }}%
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    <button type="submit" class="mt-4 px-4 py-2 bg-blue-500 text-white rounded-lg">Actualizar Calificaciones</button>
+</form>
+
+<a href="{{ url_for('index') }}" class="mt-4 inline-block text-blue-500 hover:underline">Volver a la lista de alumnos</a>
+
+{% endblock %}

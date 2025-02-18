@@ -1,0 +1,16 @@
+{% extends 'base.html' %}
+
+{% block title %}Agregar Materia{% endblock %}
+
+{% block content %}
+<h1 class="text-2xl font-bold mb-4">Agregar Materia para {{ alumno.nombre }}</h1>
+
+<form method="POST" action="{{ url_for('agregar_materia', id=alumno.id) }}" class="max-w-lg">
+    <label for="nombre" class="block mb-2">Nombre de la Materia:</label>
+    <input type="text" id="nombre" name="nombre" required class="w-full p-2 mb-4 border rounded">
+
+    <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">Agregar Materia</button>
+    <a href="{{ url_for('alumno_detalle', id=alumno.id) }}" class="ml-4 text-gray-600 hover:underline">Cancelar</a>
+</form>
+
+{% endblock %}

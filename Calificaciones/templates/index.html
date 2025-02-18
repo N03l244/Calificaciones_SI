@@ -1,0 +1,38 @@
+{% extends 'base.html' %}
+
+{% block title %}Lista de Alumnos{% endblock %}
+
+{% block content %}
+<h1 class="text-2xl font-bold mb-4">Lista de Alumnos</h1>
+
+<!-- Botón para agregar un nuevo alumno -->
+<a href="{{ url_for('agregar_alumno') }}" class="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700 mb-4 inline-block">Agregar Alumno</a>
+
+<table class="table-auto w-full border-collapse border border-gray-300">
+    <thead>
+        <tr class="bg-gray-200">
+            <th class="border border-gray-300 px-4 py-2">ID</th>
+            <th class="border border-gray-300 px-4 py-2">Nombre</th>
+            <th class="border border-gray-300 px-4 py-2">Email</th>
+            <th class="border border-gray-300 px-4 py-2">Acciones</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for alumno in alumnos %}
+        <tr>
+            <td class="border border-gray-300 px-4 py-2">{{ alumno.id }}</td>
+            <td class="border border-gray-300 px-4 py-2">{{ alumno.nombre }}</td>
+            <td class="border border-gray-300 px-4 py-2">{{ alumno.email }}</td>
+            <td class="border border-gray-300 px-4 py-2">
+                <a href="{{ url_for('alumno_detalle', id=alumno.id) }}" class="text-blue-500 hover:underline">Ver Detalles</a>
+            </td>
+        </tr>
+        {% else %}
+        <tr>
+            <td colspan="4" class="text-center py-4">No hay alumnos registrados.</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+{% endblock %}
