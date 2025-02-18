@@ -1,0 +1,30 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <h1>Editar Información del Alumno</h1>
+
+    <form method="POST">
+        <label for="nombre">Nombre:</label>
+        <input type="text" id="nombre" name="nombre" value="{{ alumno.nombre }}">
+        <br>
+        
+        <label for="email">Email:</label>
+        <input type="email" id="email" name="email" value="{{ alumno.email }}">
+        <br>
+
+        <label for="matricula">Matrícula:</label>
+        <input type="text" id="matricula" name="matricula" value="{{ alumno.matricula }}">
+        <br>
+
+        <label for="carrera">Carrera:</label>
+        <input type="text" id="carrera" name="carrera" value="{{ alumno.carrera }}">
+        <br>
+
+        <label for="cuatrimestre">Cuatrimestre:</label>
+        <input type="number" id="cuatrimestre" name="cuatrimestre" value="{{ alumno.cuatrimestre }}">
+        <br>
+
+        <button type="submit">Guardar Cambios</button>
+
+    </form>
+{% endblock %}

@@ -11,25 +11,25 @@
 <table class="table-auto w-full border-collapse border border-gray-300">
     <thead>
         <tr class="bg-gray-200">
-            <th class="border border-gray-300 px-4 py-2">ID</th>
+            <th class="border border-gray-300 px-4 py-2">Matrícula</th>
             <th class="border border-gray-300 px-4 py-2">Nombre</th>
-            <th class="border border-gray-300 px-4 py-2">Email</th>
+            <th class="border border-gray-300 px-4 py-2">Correo</th>
+            <th class="border border-gray-300 px-4 py-2">Carrera</th>
+            <th class="border border-gray-300 px-4 py-2">Cuatrimestre</th>
             <th class="border border-gray-300 px-4 py-2">Acciones</th>
         </tr>
     </thead>
     <tbody>
         {% for alumno in alumnos %}
         <tr>
-            <td class="border border-gray-300 px-4 py-2">{{ alumno.id }}</td>
+            <td class="border border-gray-300 px-4 py-2">{{ alumno.matricula }}</td>
             <td class="border border-gray-300 px-4 py-2">{{ alumno.nombre }}</td>
             <td class="border border-gray-300 px-4 py-2">{{ alumno.email }}</td>
+            <td class="border border-gray-300 px-4 py-2">{{ alumno.carrera }}</td>
+            <td class="border border-gray-300 px-4 py-2">{{ alumno.cuatrimestre }}</td>
             <td class="border border-gray-300 px-4 py-2">
-                <a href="{{ url_for('alumno_detalle', id=alumno.id) }}" class="text-blue-500 hover:underline">Ver Detalles</a>
+                <a href="{{ url_for('alumno_detalle', id=alumno.id) }}" class="text-blue-500 hover:underline">Ver detalles</a>
             </td>
-        </tr>
-        {% else %}
-        <tr>
-            <td colspan="4" class="text-center py-4">No hay alumnos registrados.</td>
         </tr>
         {% endfor %}
     </tbody>
