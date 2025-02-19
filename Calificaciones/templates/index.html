@@ -3,7 +3,10 @@
 {% block title %}Lista de Alumnos{% endblock %}
 
 {% block content %}
+
+
 <h1 class="text-2xl font-bold mb-4">Lista de Alumnos</h1>
+
 
 <!-- Botón para agregar un nuevo alumno -->
 <a href="{{ url_for('agregar_alumno') }}" class="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700 mb-4 inline-block">Agregar Alumno</a>
@@ -34,5 +37,9 @@
         {% endfor %}
     </tbody>
 </table>
-
+<br>
+<!-- En index.html -->
+<a href="{{ url_for('gestion_materias') }}" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 mb-4 inline-block">
+    Gestionar Materias
+</a>
 {% endblock %}

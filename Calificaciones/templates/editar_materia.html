@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+
+{% block title %}Editar Materia{% endblock %}
+
+{% block content %}
+    <h1 class="text-2xl font-bold mb-4">Editar Materia: {{ materia.nombre }}</h1>
+
+    <form method="POST">
+        <label for="nombre" class="block mb-2">Nombre de la Materia:</label>
+        <input type="text" id="nombre" name="nombre" value="{{ materia.nombre }}" class="w-full p-2 mb-4 border rounded" required>
+        
+        <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">Guardar Cambios</button>
+        <a href="{{ url_for('index') }}" class="ml-4 text-gray-600 hover:underline">Cancelar</a>
+    </form>
+{% endblock %}

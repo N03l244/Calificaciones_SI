@@ -1,0 +1,20 @@
+{% extends 'base.html' %}
+
+{% block title %}Agregar Materia{% endblock %}
+
+{% block content %}
+    <h1 class="text-2xl font-bold mb-4">Agregar Nueva Materia</h1>
+
+    {% if error %}
+        <p class="text-red-500">{{ error }}</p>
+    {% endif %}
+
+    <form method="POST">
+        <!-- Campo para el nombre de la materia -->
+        <label for="nombre" class="block mb-2">Nombre de la Materia:</label>
+        <input type="text" id="nombre" name="nombre" class="w-full p-2 mb-4 border rounded" required>
+        
+        <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">Agregar Materia</button>
+        <a href="{{ url_for('gestion_materias') }}" class="ml-4 text-gray-600 hover:underline">Cancelar</a>
+    </form>
+{% endblock %}

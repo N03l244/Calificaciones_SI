@@ -19,7 +19,7 @@ class Alumno(db.Model):
     carrera = db.Column(db.String(255), nullable=False)
     cuatrimestre = db.Column(db.String(255), nullable=False)
     # Relación con calificaciones
-    calificaciones = db.relationship('Calificacion', backref='estudiante', lazy=True)
+    calificaciones = db.relationship('Calificacion', backref='alumno', lazy=True)
 
 class Materia(db.Model):
     __tablename__ = 'materias'
@@ -50,40 +50,42 @@ def index():
     alumnos = Alumno.query.all()
     return render_template('index.html', alumnos=alumnos)
 
+# Ruta para la gestión de materias
+@app.route('/materias')
+def gestion_materias():
+    materias = Materia.query.all()  # Obtener todas las materias
+    return render_template('gestionar_materias.html', materias=materias)
+
 # Ruta para el detalle del alumno
 @app.route('/alumno/<int:id>', methods=['GET', 'POST'])
 def alumno_detalle(id):
     alumno = Alumno.query.get_or_404(id)
     
     # Obtener las materias asociadas al alumno a través de las calificaciones
-    materias = [calificacion.materia for calificacion in alumno.calificaciones]
-
-    print(f"Materias del alumno {alumno.id}: {materias}")  # Verificación
-
+    calificaciones = Calificacion.query.filter_by(id_alumno=alumno.id).all()
+    
+    # Crear un diccionario para almacenar las calificaciones por materia
+    materias_con_calificaciones = {}
+    for calificacion in calificaciones:
+        materia = Materia.query.get(calificacion.id_materia)
+        if materia:
+            materias_con_calificaciones[materia.id] = {
+                'materia': materia,
+                'calificacion': calificacion
+            }
+    
     if request.method == 'POST':
-        for materia in materias:
-            p1 = request.form.get(f'parcial1_{materia.id}', type=int)
-            p2 = request.form.get(f'parcial2_{materia.id}', type=int)
-            p3 = request.form.get(f'parcial3_{materia.id}', type=int)
+        for materia_id, datos in materias_con_calificaciones.items():
+            p1 = request.form.get(f'parcial1_{materia_id}', type=float)
+            p2 = request.form.get(f'parcial2_{materia_id}', type=float)
+            p3 = request.form.get(f'parcial3_{materia_id}', type=float)
 
-            # Buscar la calificación existente
-            calificacion = Calificacion.query.filter_by(id_alumno=alumno.id, id_materia=materia.id).first()
-
+            calificacion = datos['calificacion']
             if calificacion:
                 # Actualizar solo los valores no nulos
                 if p1 is not None: calificacion.parcial1 = p1
                 if p2 is not None: calificacion.parcial2 = p2
                 if p3 is not None: calificacion.parcial3 = p3
-            else:
-                # Crear una nueva calificación si no existe
-                nueva_calificacion = Calificacion(
-                    id_alumno=alumno.id,
-                    id_materia=materia.id,
-                    parcial1=p1,
-                    parcial2=p2,
-                    parcial3=p3
-                )
-                db.session.add(nueva_calificacion)
 
         db.session.commit()
         return redirect(url_for('alumno_detalle', id=alumno.id))
@@ -91,9 +93,14 @@ def alumno_detalle(id):
     # Calcular la probabilidad de aprobar el cuatrimestre
     probabilidad, estado = calcular_probabilidad_cuatrimestre(alumno)
 
-    return render_template('alumno_detalle.html', alumno=alumno, calcular_probabilidad=calcular_probabilidad, materias=materias, probabilidad_cuatrimestre=probabilidad, estado_cuatrimestre=estado)
-
-
+    return render_template(
+        'alumno_detalle.html',
+        alumno=alumno,
+        calcular_probabilidad=calcular_probabilidad,
+        materias_con_calificaciones=materias_con_calificaciones,
+        probabilidad_cuatrimestre=probabilidad,
+        estado_cuatrimestre=estado
+    )
 # Ruta para agregar un nuevo alumno
 @app.route('/agregar', methods=['GET', 'POST'])
 def agregar_alumno():
@@ -176,7 +183,52 @@ def agregar_materia(id):
 
     return render_template('agregar_materia.html', alumno=alumno, materias_existentes=materias_existentes)
 
+# Ruta para agregar una nueva materia (sin ID de alumno)
+@app.route('/materia/agregar', methods=['GET', 'POST'])
+def agregar_materiaSinID():
+    if request.method == 'POST':
+        nombre_materia = request.form.get('nombre')
+        
+        # Verificar si la materia ya existe
+        materia_existente = Materia.query.filter_by(nombre=nombre_materia).first()
+        
+        if materia_existente:
+            return render_template('agregar_materia_sin_id.html', error="La materia ya existe.")
+        
+        # Crear una nueva materia
+        nueva_materia = Materia(nombre=nombre_materia)
+        db.session.add(nueva_materia)
+        db.session.commit()
+        
+        return redirect(url_for('gestion_materias'))
+    
+    return render_template('agregar_materia_sin_id.html')
 
+# Ruta para eliminar una materia
+@app.route('/materia/<int:id>/eliminar', methods=['POST'])
+def eliminar_materia(id):
+    materia = Materia.query.get_or_404(id)
+    
+    # Eliminar todas las calificaciones asociadas a la materia
+    Calificacion.query.filter_by(id_materia=id).delete()
+    
+    # Eliminar la materia
+    db.session.delete(materia)
+    db.session.commit()
+    
+    return redirect(url_for('gestion_materias'))  # Redirigir a la gestión de materias
+
+# Ruta para editar una materia
+@app.route('/materia/<int:id>/editar', methods=['GET', 'POST'])
+def editar_materia(id):
+    materia = Materia.query.get_or_404(id)
+    
+    if request.method == 'POST':
+        materia.nombre = request.form['nombre']
+        db.session.commit()
+        return redirect(url_for('gestion_materias'))  # Redirigir a la gestión de materias
+    
+    return render_template('editar_materia.html', materia=materia)
 
 
 @app.route('/editar_alumno/<int:alumno_id>', methods=['GET', 'POST'])
@@ -192,6 +244,20 @@ def editar_alumno(alumno_id):
         return redirect(url_for('alumno_detalle', id=alumno.id))
     
     return render_template('editar_alumno.html', alumno=alumno)
+
+# Ruta para eliminar un alumno
+@app.route('/alumno/<int:id>/eliminar', methods=['POST'])
+def eliminar_alumno(id):
+    alumno = Alumno.query.get_or_404(id)
+    
+    # Eliminar todas las calificaciones asociadas al alumno
+    Calificacion.query.filter_by(id_alumno=id).delete()
+    
+    # Eliminar el alumno
+    db.session.delete(alumno)
+    db.session.commit()
+    
+    return redirect(url_for('index'))
 
 # Función para calcular la probabilidad de aprobar el cuatrimestre
 def calcular_probabilidad_cuatrimestre(alumno):
@@ -221,7 +287,7 @@ def calcular_probabilidad_cuatrimestre(alumno):
     # Determinar el estado del cuatrimestre
     if reprobadas > total_asignaturas / 2:
         estado = "Reprobado"
-    elif aprobadas + en_evaluacion_final >= total_asignaturas / 2:
+    elif en_evaluacion_final > 0 or reprobadas > 0:
         estado = "En Riesgo"
     else:
         estado = "Aprobado"
