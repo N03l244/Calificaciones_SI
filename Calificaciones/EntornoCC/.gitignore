@@ -1,0 +1,4 @@
+# Ignorar entornos virtuales de Python
+venv/
+EntornoCC/
+.env
