@@ -33,12 +33,23 @@
 
         <!-- Botones de Editar y Eliminar -->
         <div class="mt-6 flex space-x-4">
-            <a href="{{ url_for('editar_alumno', alumno_id=alumno.id) }}" class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 transition duration-300">
-                Editar Información del Alumno
+            <a href="{{ url_for('editar_alumno', alumno_id=alumno.id) }}" class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 transition duration-300 flex items-center space-x-2">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M12 20h9" />
+                    <path d="M16.5 3.5a2.121 2.121 0 013 3L7 19l-4 1 1-4 12.5-12.5z" />
+                </svg>
+                <span>Editar</span>
             </a>
-            <form method="POST" action="{{ url_for('eliminar_alumno', id=alumno.id) }}" class="inline">
-                <button type="submit" class="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600 transition duration-300">
-                    Eliminar Alumno
+            <form method="POST" action="{{ url_for('eliminar_alumno', id=alumno.id) }}" class="inline" onsubmit="return confirmarEliminacion()">
+                <button type="submit" class="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600 transition duration-300 flex items-center space-x-2">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M3 6h18" />
+                        <path d="M8 6V4a2 2 0 012-2h4a2 2 0 012 2v2" />
+                        <path d="M10 11v6" />
+                        <path d="M14 11v6" />
+                        <path d="M5 6l1 14a2 2 0 002 2h8a2 2 0 002-2l1-14" />
+                    </svg>
+                    <span>Eliminar</span>
                 </button>
             </form>
         </div>
@@ -84,9 +95,12 @@
                     </div>
                 </div>
             {% endfor %}
-            <button type="submit" class="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600 transition duration-300">
+            <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded flex items-center gap-2 hover:bg-blue-600 transition-all">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M17.593 3.322c1.1.128 1.907 1.077 1.907 2.185V21L12 17.25 4.5 21V5.507c0-1.108.806-2.057 1.907-2.185a48.507 48.507 0 0 1 11.186 0Z" />
+                  </svg>
                 Guardar Calificaciones
-            </button>
+              </button>
         </form>
     </div>
 
@@ -109,11 +123,31 @@
         <p class="text-gray-700">Estado: {{ estado_cuatrimestre }}</p>
     </div>
 
-    <!-- Enlaces adicionales -->
-    <div class="mt-6">
-        <a href="{{ url_for('agregar_materia', id=alumno.id) }}" class="text-blue-500 hover:underline">Agregar Materia</a>
-        <br>
-        <a href="{{ url_for('index') }}" class="text-blue-500 hover:underline">Volver a la lista de alumnos</a>
+    <!-- Botón para Agregar Materia -->
+    <div class="mt-2 flex space-x-4">
+        <a href="{{ url_for('agregar_materia', id=alumno.id) }}" class="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600 transition duration-300 flex items-center space-x-2">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M12 5v14" />
+                <path d="M5 12h14" />
+            </svg>
+            <span>Agregar Materia</span>
+        </a>
+    </div>
+     <!-- Botón para Volver a la Lista de Alumnos -->
+     <div class="mt-4">
+        <a href="{{ url_for('index') }}" class="text-blue-500 hover:underline flex items-center space-x-2">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M15 18l-6-6 6-6" />
+            </svg>
+            <span>Volver a la lista de alumnos</span>
+        </a>
     </div>
 </div>
+
+<script>
+    function confirmarEliminacion() {
+        // Mostrar un cuadro de diálogo de confirmación
+        return confirm("¿Estás seguro de que deseas eliminar este alumno? Esta acción no se puede deshacer.");
+    }
+</script>
 {% endblock %}

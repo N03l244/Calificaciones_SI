@@ -25,8 +25,20 @@
     <label for="nombre" class="block mb-2">Nombre de la Nueva Materia:</label>
     <input type="text" id="nombre" name="nombre" class="w-full p-2 mb-4 border rounded">
 
-    <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">Agregar Materia</button>
-    <a href="javascript:history.back()" class="ml-4 text-gray-600 hover:underline">Cancelar</a>
+    <div class="mt-8 flex space-x-6">
+        <button type="submit" class="bg-green-500 text-white px-4 py-2 rounded flex items-center gap-2 hover:bg-green-600 transition-all">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v6m3-3H9m12 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+            </svg>
+            Agregar Alumno
+          </button>
+        <a href="javascript:history.back()" class="bg-gray-500 text-white px-4 py-2 rounded flex items-center gap-2">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
+              <path stroke-linecap="round" stroke-linejoin="round" d="m9.75 9.75 4.5 4.5m0-4.5-4.5 4.5M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+            </svg>
+            Cancelar
+          </a>
+    </div>
 </form>
 
 {% endblock %}
