@@ -1,30 +1,44 @@
 {% extends 'base.html' %}
 
+{% block title %}Editar Información del Alumno{% endblock %}
+
 {% block content %}
-    <h1>Editar Información del Alumno</h1>
+<div class="container mx-auto px-4 py-8">
+    <h1 class="text-3xl font-bold text-gray-800 mb-6">Editar Información del Alumno</h1>
 
-    <form method="POST">
-        <label for="nombre">Nombre:</label>
-        <input type="text" id="nombre" name="nombre" value="{{ alumno.nombre }}">
-        <br>
-        
-        <label for="email">Email:</label>
-        <input type="email" id="email" name="email" value="{{ alumno.email }}">
-        <br>
+    <!-- Formulario de Editar Alumno -->
+    <div class="bg-white shadow-md rounded-lg p-6 mb-8">
+        <form method="POST">
+            <div class="mb-4">
+                <label for="nombre" class="block text-gray-700">Nombre:</label>
+                <input type="text" id="nombre" name="nombre" value="{{ alumno.nombre }}" class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+            </div>
+            <div class="mb-4">
+                <label for="email" class="block text-gray-700">Email:</label>
+                <input type="email" id="email" name="email" value="{{ alumno.email }}" class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+            </div>
+            <div class="mb-4">
+                <label for="matricula" class="block text-gray-700">Matrícula:</label>
+                <input type="text" id="matricula" name="matricula" value="{{ alumno.matricula }}" class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+            </div>
+            <div class="mb-4">
+                <label for="carrera" class="block text-gray-700">Carrera:</label>
+                <input type="text" id="carrera" name="carrera" value="{{ alumno.carrera }}" class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+            </div>
+            <div class="mb-4">
+                <label for="cuatrimestre" class="block text-gray-700">Cuatrimestre:</label>
+                <input type="number" id="cuatrimestre" name="cuatrimestre" value="{{ alumno.cuatrimestre }}" class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+            </div>
 
-        <label for="matricula">Matrícula:</label>
-        <input type="text" id="matricula" name="matricula" value="{{ alumno.matricula }}">
-        <br>
-
-        <label for="carrera">Carrera:</label>
-        <input type="text" id="carrera" name="carrera" value="{{ alumno.carrera }}">
-        <br>
-
-        <label for="cuatrimestre">Cuatrimestre:</label>
-        <input type="number" id="cuatrimestre" name="cuatrimestre" value="{{ alumno.cuatrimestre }}">
-        <br>
-
-        <button type="submit">Guardar Cambios</button>
-
-    </form>
+            <div class="mt-6">
+                <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 transition duration-300">
+                    Guardar Cambios
+                </button>
+                <a href="javascript:history.back()" class="bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-600 transition duration-300 ml-2">
+                    Cancelar
+                </a>
+            </div>
+        </form>
+    </div>
+</div>
 {% endblock %}

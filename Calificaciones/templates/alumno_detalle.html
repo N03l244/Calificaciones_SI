@@ -55,15 +55,15 @@
                     <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
                         <div>
                             <label for="parcial1_{{ materia_id }}" class="block text-gray-700">Parcial 1:</label>
-                            <input type="number" step="0.01" name="parcial1_{{ materia_id }}" value="{{ datos.calificacion.parcial1 or '' }}" class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                            <input type="number" step="0.01" name="parcial1_{{ materia_id }}" value="{{ datos.calificacion.parcial1 or '' }}" min="0" max="100" class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
                         </div>
                         <div>
                             <label for="parcial2_{{ materia_id }}" class="block text-gray-700">Parcial 2:</label>
-                            <input type="number" step="0.01" name="parcial2_{{ materia_id }}" value="{{ datos.calificacion.parcial2 or '' }}" class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                            <input type="number" step="0.01" name="parcial2_{{ materia_id }}" value="{{ datos.calificacion.parcial2 or '' }}" min="0" max="100" class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
                         </div>
                         <div>
                             <label for="parcial3_{{ materia_id }}" class="block text-gray-700">Parcial 3:</label>
-                            <input type="number" step="0.01" name="parcial3_{{ materia_id }}" value="{{ datos.calificacion.parcial3 or '' }}" class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                            <input type="number" step="0.01" name="parcial3_{{ materia_id }}" value="{{ datos.calificacion.parcial3 or '' }}" min="0" max="100" class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
                         </div>
                     </div>
                     <!-- Probabilidad de aprobar la materia -->

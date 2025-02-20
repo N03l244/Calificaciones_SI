@@ -1,28 +1,43 @@
 {% extends 'base.html' %}
 
-{% block title %}Agregar Alumno{% endblock %}
+{% block title %}Agregar Nuevo Alumno{% endblock %}
 
 {% block content %}
-<h1 class="text-2xl font-bold mb-4">Agregar Alumno</h1>
+<div class="container mx-auto px-4 py-8">
+    <h1 class="text-3xl font-bold text-gray-800 mb-6">Agregar Nuevo Alumno</h1>
 
-<form method="POST">
-    <label for="matricula">Matrícula:</label>
-    <input type="text" name="matricula" id="matricula" required>
-
-    <label for="nombre">Nombre:</label>
-    <input type="text" name="nombre" id="nombre" required>
-    
-    <label for="email">Email:</label>
-    <input type="email" name="email" id="email" required>
-    
-    <label for="carrera">Carrera:</label>
-    <input type="text" name="carrera" id="carrera" required>
-    
-    <label for="cuatrimestre">Cuatrimestre:</label>
-    <input type="text" name="cuatrimestre" id="cuatrimestre" required>
-    
-    <button type="submit">Agregar Alumno</button>
-</form>
-
-
+    <!-- Formulario de Agregar Alumno -->
+    <div class="bg-white shadow-md rounded-lg p-6 mb-8">
+        <form method="POST">
+            <div class="mb-4">
+                <label for="nombre" class="block text-gray-700">Nombre:</label>
+                <input type="text" id="nombre" name="nombre" class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+            </div>
+            <div class="mb-4">
+                <label for="email" class="block text-gray-700">Email:</label>
+                <input type="email" id="email" name="email" class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+            </div>
+            <div class="mb-4">
+                <label for="matricula" class="block text-gray-700">Matrícula:</label>
+                <input type="text" id="matricula" name="matricula" class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+            </div>
+            <div class="mb-4">
+                <label for="carrera" class="block text-gray-700">Carrera:</label>
+                <input type="text" id="carrera" name="carrera" class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+            </div>
+            <div class="mb-4">
+                <label for="cuatrimestre" class="block text-gray-700">Cuatrimestre:</label>
+                <input type="number" id="cuatrimestre" name="cuatrimestre" class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+            </div>
+            <div class="mt-6">
+                <button type="submit" class="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600 transition duration-300">
+                    Agregar Alumno
+                </button>
+                <a href="javascript:history.back()" class="bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-600 transition duration-300 ml-2">
+                    Cancelar
+                </a>
+            </div>
+        </form>
+    </div>
+</div>
 {% endblock %}

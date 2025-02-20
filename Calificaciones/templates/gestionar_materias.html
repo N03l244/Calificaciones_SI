@@ -24,10 +24,10 @@
                 <td class="border border-gray-300 px-4 py-2">{{ materia.nombre }}</td>
                 <td class="border border-gray-300 px-4 py-2">
                     <!-- Botón para editar -->
-                    <a href="{{ url_for('editar_materia', id=materia.id) }}" class="text-blue-500 hover:underline">Editar</a>
+                    <a href="{{ url_for('editar_materia', id=materia.id) }}" class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 transition duration-300">Editar</a>
                     <!-- Formulario para eliminar -->
                     <form method="POST" action="{{ url_for('eliminar_materia', id=materia.id) }}" class="inline">
-                        <button type="submit" class="text-red-500 hover:underline ml-2">Eliminar</button>
+                        <button type="submit" class="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600 transition duration-300">Eliminar</button>
                     </form>
                 </td>
             </tr>

@@ -41,7 +41,7 @@ class Calificacion(db.Model):
 # Función para calcular probabilidad de aprobar
 def calcular_probabilidad(p1, p2, p3):
     parciales = [p1, p2, p3]
-    aprobados = sum(1 for p in parciales if p is not None and p >= 60)
+    aprobados = sum(1 for p in parciales if p is not None and p >= 70)
     return (aprobados / 3) * 100 if parciales else 0
 
 # Ruta principal (Lista de alumnos)

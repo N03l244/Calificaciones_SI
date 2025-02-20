@@ -26,7 +26,7 @@
     <input type="text" id="nombre" name="nombre" class="w-full p-2 mb-4 border rounded">
 
     <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">Agregar Materia</button>
-    <a href="{{ url_for('alumno_detalle', id=alumno.id) }}" class="ml-4 text-gray-600 hover:underline">Cancelar</a>
+    <a href="javascript:history.back()" class="ml-4 text-gray-600 hover:underline">Cancelar</a>
 </form>
 
 {% endblock %}
