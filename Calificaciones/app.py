@@ -1,5 +1,6 @@
 from flask import Flask, render_template, request, redirect, url_for
 from flask_sqlalchemy import SQLAlchemy
+from math import comb
 
 app = Flask(__name__)
 
@@ -270,7 +271,7 @@ def calcular_probabilidad_cuatrimestre(alumno):
     for calificacion in calificaciones:
         parciales = [calificacion.parcial1, calificacion.parcial2, calificacion.parcial3]
         aprobados = sum(1 for p in parciales if p is not None and p >= 70)
-        
+
         if aprobados == 3:
             aprobadas += 1
         elif aprobados == 0:
@@ -282,7 +283,17 @@ def calcular_probabilidad_cuatrimestre(alumno):
     if total_asignaturas == 0:
         return 0, "Sin asignaturas"
 
-    probabilidad = (aprobadas + 0.5 * en_evaluacion_final) / total_asignaturas * 100
+    # Ajustar la regla del 50% de las materias
+    umbral_aprobacion = (total_asignaturas // 2) if total_asignaturas % 2 == 0 else (total_asignaturas // 2) + 1
+
+    # Si el alumno aprueba al menos el umbral, se garantiza el 100% de probabilidad
+    if aprobadas >= umbral_aprobacion:
+        return 100, "Aprobado"
+
+    # Calcular la probabilidad usando distribución binomial
+    probabilidad_aprobar_final = 0.5  # Suponiendo 50% de probabilidad de aprobar en evaluación final
+
+    probabilidad = (aprobadas + sum(comb(3, aprobados) * (probabilidad_aprobar_final ** aprobados) * ((1 - probabilidad_aprobar_final) ** (3 - aprobados)) for _ in range(en_evaluacion_final))) / total_asignaturas * 100
 
     # Determinar el estado del cuatrimestre
     if reprobadas > total_asignaturas / 2:
@@ -293,6 +304,8 @@ def calcular_probabilidad_cuatrimestre(alumno):
         estado = "Aprobado"
 
     return probabilidad, estado
+
+
 
 # Crear tablas
 with app.app_context():
