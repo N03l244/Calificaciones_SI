@@ -1,4 +1,2 @@
-# Ignorar entornos virtuales de Python
-venv/
-EntornoCC/
-.env
+# Created by venv; see https://docs.python.org/3/library/venv.html
+*
